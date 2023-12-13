@@ -1,7 +1,10 @@
 "use client"
 import useLoginModal from '@/hooks/useLoginModal'
 import useRegisterModal from '@/hooks/useRegisterModal'
+import axios from 'axios'
+import { signIn } from 'next-auth/react'
 import React, { useCallback, useState, ChangeEvent } from 'react'
+import { toast } from 'react-hot-toast'
 import Input from '../Input'
 import Modal from '../Modal'
 const initRegisterForm = {
@@ -29,13 +32,17 @@ const RegisterModal = () => {
   const onSubmit = useCallback( async ()=>{
     try {
       setLoading(true)
+      await axios.post("api/register", registerform)
+      toast.success("Account created.")
+      signIn("credentials", registerform)
       registerModal.onClose()
     } catch (error) {
+      toast.error("error")
       console.log(error);
     } finally {
       setLoading(false)
     }
-  }, [registerModal])
+  }, [registerModal, registerform])
   const bodyContent = (
     <div className='flex flex-col gap-4'>
       <Input
